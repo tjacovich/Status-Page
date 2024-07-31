@@ -2,8 +2,8 @@ name: Deploy site
 
 on:
   push:
-    branches: ["main"]
-    
+    branches: ['main']
+
 jobs:
   build-site:
     runs-on: ubuntu-latest
@@ -40,6 +40,9 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
     name: Deploy Site to GitHub Pages
     needs: [build-site]
