@@ -9,6 +9,7 @@ import { Repo } from "./github/types";
 import { StatusChecker } from "./status";
 import { ReportFile } from "./types";
 import { generateCoreLogger } from "./util";
+import { IncidentManager } from "./github/incidents";
 
 export const env = envsafe({
   SOURCES: str(),
@@ -21,6 +22,10 @@ export const env = envsafe({
   AGE_LIMIT: num({
     default: 45,
     desc: "Limit age (in days) of how old can the timestamps be"
+  }),
+  INCIDENT_LABEL: str({
+    default: "incident",
+    desc: "Name of the label. Not case sensitive"
   })
 });
 
@@ -50,16 +55,17 @@ const run = async () => {
   const token = env.GITHUB_TOKEN;
   const api = getOctokit(token);
   const artifactManager = new ArtifactManager(api, logger, env.ARTIFACT_NAME);
+  const incidentManager = new IncidentManager(api, logger, env.INCIDENT_LABEL);
 
   const artifact = await artifactManager.getPreviousArtifact(repo, env.JOB_NAME);
-  logger.info(`Found artifact with ${artifact?.length} elements`);
+  logger.info(`Found artifact with ${artifact?.site.length ?? 0} elements`);
 
-  const siteResult: Map<string, ReportFile> = new Map();
+  const siteResult: Map<string, ReportFile["site"][number]["status"]> = new Map();
 
   if (artifact) {
     logger.info(`Mapping old report`);
-    artifact.forEach(report => {
-      siteResult.set(report.name, report)
+    artifact.site.forEach(report => {
+      siteResult.set(report.name, report.status)
     });
   }
 
@@ -70,22 +76,24 @@ const run = async () => {
     const statusChecker = new StatusChecker(name, url, logger);
     const result = await statusChecker.verifyEndpoint();
 
-    let report = siteResult.get(name);
+    let report: ReportFile["site"][number]["status"] | undefined = siteResult.get(name);
 
     // Create report if it doesn't exist
     if (!report) {
-      report = { name, status: [] };
+      report = [];
     }
 
     // We push the value to the status array
-    report.status.push({ timestamp: now, result });
+    report.push({ timestamp: now, result });
     siteResult.set(name, report);
   }
 
+  const siteReports: ReportFile["site"] = [];
+
   for (const [name, report] of siteResult) {
-    const beforeCleanLength = report.status.length;
+    const beforeCleanLength = report.length;
     // Clean old timestamp reports
-    const cleanedStatus = report.status.filter(({ timestamp }) => Math.abs(moment.unix(timestamp).diff(moment.now(), "days")) < env.AGE_LIMIT);
+    const cleanedStatus = report.filter(({ timestamp }) => Math.abs(moment.unix(timestamp).diff(moment.now(), "days")) < env.AGE_LIMIT);
 
     if (cleanedStatus.length !== beforeCleanLength) {
       logger.debug(`Removed ${beforeCleanLength - cleanedStatus.length} elements from '${name}'`);
@@ -97,11 +105,15 @@ const run = async () => {
       logger.info(`Deleted report for '${name}' because it's empty`)
     } else {
       logger.info(`'${name}' status has ${cleanedStatus.length} status`);
-      siteResult.set(name, { name, status: cleanedStatus });
+      siteReports.push({ name, status: cleanedStatus });
     }
   }
 
-  const file = await artifactManager.generateArtifact(Array.from(siteResult.values()));
+  const incidents = await incidentManager.obtainPastIncidents(repo, env.AGE_LIMIT);
+
+  const report: ReportFile = { incidents, site: siteReports }
+
+  const file = await artifactManager.generateArtifact(report);
   setOutput("file", file);
 }
 

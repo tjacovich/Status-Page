@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Incidents from '$lib/components/Incidents.svelte';
 	import Status from '$lib/components/Status.svelte';
 	import System from '$lib/components/System.svelte';
 
@@ -17,6 +18,10 @@
 		{#each data.statusLog as [name, siteStatus]}
 			<Status {name} statuses={siteStatus} />
 		{/each}
+		{#if data.incidents?.length > 0}
+			<div class="divider" />
+			<Incidents incidents={data.incidents} />
+		{/if}
 	</div>
 </main>
 
