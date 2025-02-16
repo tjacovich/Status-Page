@@ -51,8 +51,11 @@ jobs:
         id: metrics
         env:
           SOURCES: |
-            GitHub->https://github.com
-            Facebook->https://facebook.com
+            ADS Bumblebee->https://ui.adsabs.harvard.edu
+            ADS Bootstrap->https://api.adsabs.harvard.edu/v1/accounts/bootstrap
+            ADS API Status->https://api.adsabs.harvard.edu/v1/ready
+            SciXplorer->https://scixplorer.org
+            Astrophysicist-Adjacent->https://astrophysicist-adjacent.com
           GITHUB_TOKEN: ${{ github.token }}
           JOB_NAME: ${{ github.workflow }}
           ARTIFACT_NAME: ${{ env.ARTIFACT_NAME }}
