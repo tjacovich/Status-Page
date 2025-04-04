@@ -25,10 +25,10 @@
 	<div class="flex justify-between flex-col md:flex-row">
 		<div class="flex items-center gap-3">
 			<div
-				class="badge"
-				class:badge-success={lastStatus.status === StatusCode.OK}
-				class:badge-error={lastStatus.status === StatusCode.ERROR}
-				class:badge-warning={lastStatus.status === StatusCode.UNSTABLE}
+				class="badge text-gray-800"
+				class:bg-lime-500={lastStatus.status === StatusCode.OK}
+				class:bg-orange-500={lastStatus.status === StatusCode.ERROR}
+				class:bg-yellow-400={lastStatus.status === StatusCode.UNSTABLE}
 			>
 				{lastStatus.status === StatusCode.OK
 					? '✓'
@@ -53,9 +53,9 @@
 					hour: '2-digit',
 					minute: '2-digit'
 				})}
-				class:bg-success={status === StatusCode.OK}
-				class:bg-warning={status === StatusCode.UNSTABLE}
-				class:bg-error={status === StatusCode.ERROR}
+				class:bg-lime-500={status === StatusCode.OK}
+				class:bg-yellow-400={status === StatusCode.UNSTABLE}
+				class:bg-orange-500={status === StatusCode.ERROR}
 				class="tooltip ml-0.5 sm:rounded-lg flex-1 h-8 transition ease-in-out delay-150 hover:-translate-y-1"
 			></div>
 		{/each}

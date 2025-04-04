@@ -8,8 +8,14 @@
 	export let data: PageData;
 </script>
 
-<div class="w-full bg-accent header min-h-[20vh] lg:min-h-[25vh] flex items-end justify-center">
-	<div class="h-full w-full mx-2 md:mx-12">
+<div class="w-full flex-col items-end justify-center">
+	<div class="bg-black">
+		<img
+			src="https://scixplorer.org/styles/img/newsletter-banner.jpg"
+			class="max-w-3xl min-w-[50vw] mx-auto"
+		/>
+	</div>
+	<div class="max-w-3xl min-w-[50vw] mx-auto">
 		<System systems={data.statusLog} />
 	</div>
 </div>

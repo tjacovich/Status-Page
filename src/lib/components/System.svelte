@@ -29,16 +29,16 @@
 	const lastUpdate = lastState.sort((a, b) => (a ? +a : 0) - (b ? +b : 0));
 </script>
 
-<div class="lg:mx-20 md:my-10">
+<div class="md:my-10">
 	<div class="card bg-base-100 w-full my-8 shadow-xl">
 		<div class="card-body">
 			<div class="flex flex-col md:flex-row gap-y-4 items-center justify-between">
 				<div class="flex items-center gap-2">
 					<div
-						class="badge"
-						class:badge-success={systemState === StatusCode.OK}
-						class:badge-error={systemState === StatusCode.ERROR}
-						class:badge-warning={systemState === StatusCode.UNSTABLE}
+						class="badge text-gray-800"
+						class:bg-lime-500={systemState === StatusCode.OK}
+						class:bg-orange-500={systemState === StatusCode.ERROR}
+						class:bg-yellow-400={systemState === StatusCode.UNSTABLE}
 					>
 						{systemState === StatusCode.OK ? '✓' : systemState === StatusCode.ERROR ? '⤫' : '?'}
 					</div>
