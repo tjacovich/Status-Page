@@ -50,8 +50,9 @@ jobs:
         run: npm start
         id: metrics
         env:
-          SOURCES: ADS site ->https://ui.adsabs.harvard.edu
-            SciXplorer site ->https://scixplorer.org
+          SOURCES: |
+            ADS site->https://ui.adsabs.harvard.edu
+            SciXplorer site->https://scixplorer.org
             API Status->https://api.adsabs.harvard.edu/v1/ready
             Search->https://api.adsabs.harvard.edu/v1/search/ready->${{ secrets.ADS_TOKEN }}
             Export->https://api.adsabs.harvard.edu/v1/export/ready->${{ secrets.ADS_TOKEN }}
@@ -63,7 +64,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           JOB_NAME: ${{ github.workflow }}
           ARTIFACT_NAME: ${{ env.ARTIFACT_NAME }}
-  	  AGE_LIMIT: ${{ vars.AGE_LIMIT }}
+  	      AGE_LIMIT: ${{ vars.AGE_LIMIT }}
+          IGNORE_PREV_ARTIFACT: false
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
