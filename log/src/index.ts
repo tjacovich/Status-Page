@@ -63,12 +63,15 @@ const run = async () => {
   const siteResult: Map<string, ReportFile["site"][number]["status"]> = new Map();
 
   if (!env.IGNORE_PREV_ARTIFACT) {
+    const sourceNames = sources.map(s => s[0]);
     const artifact = await artifactManager.getPreviousArtifact(repo, env.JOB_NAME);
     logger.info(`Found artifact with ${artifact?.site.length ?? 0} elements`);
     if (artifact) {
       logger.info(`Mapping old report`);
       artifact.site.forEach(report => {
-        siteResult.set(report.name, report.status)
+        if (sourceNames.includes(report.name)){
+          siteResult.set(report.name, report.status);
+        }
       });
     }
   } else {
