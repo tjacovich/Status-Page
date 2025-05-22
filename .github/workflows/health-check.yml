@@ -66,7 +66,7 @@ jobs:
           JOB_NAME: ${{ github.workflow }}
           ARTIFACT_NAME: ${{ env.ARTIFACT_NAME }}
           AGE_LIMIT: ${{ vars.AGE_LIMIT }}
-          IGNORE_PREV_ARTIFACT: ${{ var.IGNORE_PREV_ARTIFACT }}
+          IGNORE_PREV_ARTIFACT: ${{ vars.IGNORE_PREV_ARTIFACT }}
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARTIFACT_NAME }}
