@@ -28,7 +28,7 @@ export const env = envsafe({
     desc: "Name of the label. Not case sensitive"
   }),
   IGNORE_PREV_ARTIFACT: bool({
-    default: true,
+    default: false,
   })
 });
 
